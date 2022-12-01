@@ -11,3 +11,7 @@ lto = true
 opt-level = 1
 lto = true
 debug = true
+
+[dependencies]
+itertools = "0.10.5"
+arrayvec = "0.7.2"
