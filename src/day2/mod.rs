@@ -1,31 +1,18 @@
 fn part1(inp: &str) -> usize {
     parse_input(inp).map(|(opponent, you)| {
-        // a b c rock paper scic
-        // x y z rock paper scic
-        let s1 = match you {
-            'X' => 1,
-            'Y' => 2,
-            'Z' => 3,
-            _ => unreachable!()
-        };
-        let s2 = match ((you as u8 - 'X' as u8) + 3 - (opponent as u8 - 'A' as u8)) % 3 {
-            0 => 3,
-            1 => 6,
-            2 => 0,
-            _ => unreachable!()
-        };
+        // Calculate points for what you play
+        let s1 = you as usize - 'W' as usize;
+        // Calculate points for result
+        let s2 = ((you as usize - opponent as usize - 1) % 3) * 3;
         s1 + s2
     }).sum::<usize>()
 }
 
 fn part2(inp: &str) -> usize {
     parse_input(inp).map(|(opponent, result)| {
-        let s1 = match result {
-            'X' => 0,
-            'Y' => 3,
-            'Z' => 6,
-            _ => unreachable!()
-        };
+        // Calculate points for result
+        let s1 = (result as usize - 'X' as usize) * 3;
+        // Calculate points for what you play
         let s2 = ((opponent as usize + result as usize - 1) % 3) + 1;
         s1 + s2
     }).sum::<usize>()
