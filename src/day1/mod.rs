@@ -1,5 +1,4 @@
 use std::cmp::Reverse;
-use arrayvec::ArrayVec;
 use itertools::Itertools;
 
 fn part1(inp: &str) -> usize {
