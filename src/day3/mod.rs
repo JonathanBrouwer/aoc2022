@@ -14,12 +14,9 @@ fn part1(inp: &str) -> usize {
 fn part2(inp: &str) -> usize {
     let input = parse_input(inp);
 
-    input.chunks(3).into_iter().map(|mut c| {
-        let a = c.next().unwrap();
-        let b = c.next().unwrap();
-        let c = c.next().unwrap();
-        let c = c.iter().find(|c| b.contains(c) && a.contains(c)).unwrap();
-        code(*c)
+    input.chunks(3).into_iter().map(|c| {
+        let (a, b, c) = c.collect_tuple().unwrap();
+        code(*c.iter().find(|c| b.contains(c) && a.contains(c)).unwrap())
     }).sum()
 }
 
@@ -64,7 +61,7 @@ mod tests {
     fn test_part2_real() {
         let result = part2(include_str!("input"));
         println!("Part 2: {}", result);
-        assert_eq!(0, result);
+        assert_eq!(2525, result);
     }
 }
 
