@@ -1,4 +1,4 @@
-fn part1(inp: &str) -> usize {
+pub fn part1(inp: &str) -> usize {
     parse_input(inp).map(|(opponent, you)| {
         // Calculate points for what you play
         let s1 = you - b'W';
