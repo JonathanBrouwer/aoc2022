@@ -1,9 +1,11 @@
+use itertools::Itertools;
+
 fn part1(inp: &str) -> usize {
     let input = parse_input(inp);
 
     input.map(|l| {
-        let a = &l.as_bytes()[..l.len() / 2];
-        let b = &l.as_bytes()[l.len() / 2..];
+        let a = &l[..l.len() / 2];
+        let b = &l[l.len() / 2..];
         let c = b.iter().find(|c| a.contains(c)).unwrap();
         code(*c)
     }).sum()
@@ -12,13 +14,17 @@ fn part1(inp: &str) -> usize {
 fn part2(inp: &str) -> usize {
     let input = parse_input(inp);
 
-    input.array_chunks::<3>()
-
-    return 0;
+    input.chunks(3).into_iter().map(|mut c| {
+        let a = c.next().unwrap();
+        let b = c.next().unwrap();
+        let c = c.next().unwrap();
+        let c = c.iter().find(|c| b.contains(c) && a.contains(c)).unwrap();
+        code(*c)
+    }).sum()
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=&str> {
-    inp.lines()
+fn parse_input(inp: &str) -> impl Iterator<Item=&[u8]> {
+    inp.lines().map(|l| l.as_bytes())
 }
 
 fn code(c: u8) -> usize {
@@ -51,7 +57,7 @@ mod tests {
     #[test]
     fn test_part2_ex1() {
         let result = part2(include_str!("example1"));
-        assert_eq!(0, result);
+        assert_eq!(70, result);
     }
 
     #[test]
