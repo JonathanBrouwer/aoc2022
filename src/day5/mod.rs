@@ -24,17 +24,9 @@ fn part2(inp: &str) -> String {
 }
 
 fn take_two<T>(s: &mut [T], a: usize, b: usize) -> (&mut T, &mut T) {
-    match a.cmp(&b) {
-        Ordering::Less => {
-            let (r1, r2) = s.split_at_mut(b);
-            (&mut r1[a], &mut r2[0])
-        }
-        Ordering::Equal => panic!("Can't get two mutable references to the same element."),
-        Ordering::Greater => {
-            let (r1, r2) = s.split_at_mut(a);
-            (&mut r2[0], &mut r1[b])
-        }
-    }
+    assert_ne!(a, b, "Can't get two mutable references to the same element.");
+
+    unsafe { (&mut *(&mut s[a] as *mut T), &mut *(&mut s[b] as *mut T)) }
 }
 
 fn parse_input(
