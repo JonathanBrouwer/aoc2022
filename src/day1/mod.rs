@@ -1,23 +1,22 @@
-use std::cmp::Reverse;
 use itertools::Itertools;
+use std::cmp::Reverse;
 
 fn part1(inp: &str) -> usize {
     parse_input(inp).map(|v| v.sum()).max().unwrap()
 }
 
 fn part2(inp: &str) -> usize {
-    parse_input(inp).map(|n| n.sum::<usize>()).sorted_by_key(|n| Reverse(*n)).take(3).sum()
+    parse_input(inp)
+        .map(|n| n.sum::<usize>())
+        .sorted_by_key(|n| Reverse(*n))
+        .take(3)
+        .sum()
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=impl Iterator<Item=usize> + '_> + '_ {
-    inp.split("\n\n").map(|i| i.split("\n").map(|n| n.parse().unwrap()))
+fn parse_input(inp: &str) -> impl Iterator<Item = impl Iterator<Item = usize> + '_> + '_ {
+    inp.split("\n\n")
+        .map(|i| i.split("\n").map(|n| n.parse().unwrap()))
 }
-
-
-
-
-
-
 
 #[cfg(test)]
 mod tests {
@@ -49,5 +48,3 @@ mod tests {
         assert_eq!(212520, result);
     }
 }
-
-
