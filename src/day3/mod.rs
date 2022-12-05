@@ -3,24 +3,30 @@ use itertools::Itertools;
 fn part1(inp: &str) -> usize {
     let input = parse_input(inp);
 
-    input.map(|l| {
-        let a = &l[..l.len() / 2];
-        let b = &l[l.len() / 2..];
-        let c = b.iter().find(|c| a.contains(c)).unwrap();
-        code(*c)
-    }).sum()
+    input
+        .map(|l| {
+            let a = &l[..l.len() / 2];
+            let b = &l[l.len() / 2..];
+            let c = b.iter().find(|c| a.contains(c)).unwrap();
+            code(*c)
+        })
+        .sum()
 }
 
 fn part2(inp: &str) -> usize {
     let input = parse_input(inp);
 
-    input.chunks(3).into_iter().map(|c| {
-        let (a, b, c) = c.collect_tuple().unwrap();
-        code(*c.iter().find(|c| b.contains(c) && a.contains(c)).unwrap())
-    }).sum()
+    input
+        .chunks(3)
+        .into_iter()
+        .map(|c| {
+            let (a, b, c) = c.collect_tuple().unwrap();
+            code(*c.iter().find(|c| b.contains(c) && a.contains(c)).unwrap())
+        })
+        .sum()
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=&[u8]> {
+fn parse_input(inp: &str) -> impl Iterator<Item = &[u8]> {
     inp.lines().map(|l| l.as_bytes())
 }
 
@@ -64,5 +70,3 @@ mod tests {
         assert_eq!(2525, result);
     }
 }
-
-

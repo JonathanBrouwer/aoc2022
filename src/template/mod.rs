@@ -10,9 +10,7 @@ fn part2(inp: &str) -> usize {
     return 0;
 }
 
-fn parse_input(inp: &str) -> () {
-
-}
+fn parse_input(inp: &str) -> () {}
 
 #[cfg(test)]
 mod tests {
@@ -44,5 +42,3 @@ mod tests {
         assert_eq!(0, result);
     }
 }
-
-
