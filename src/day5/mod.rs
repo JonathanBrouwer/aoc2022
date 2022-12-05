@@ -1,5 +1,4 @@
 use itertools::Itertools;
-use std::cmp::Ordering;
 
 fn part1(inp: &str) -> String {
     let (mut cs, is) = parse_input(inp);

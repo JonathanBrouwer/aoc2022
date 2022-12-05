@@ -9,5 +9,3 @@ mod day5;
 mod template;
 
 fn main() {}
-
-}
