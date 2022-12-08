@@ -19,7 +19,16 @@ fn parse_input(inp: &str) -> impl Iterator<Item = (usize, usize, usize, usize)> 
 }
 
 fn oneliner(inp: &str) {
-    print!("{:?}",inp.split(['\n',',','-']).map(|n|n.parse::<u64>().unwrap()).tuples().fold((0,0),|s,(a,b,c,d)|(s.0+(a<=c&&d<=b||c<=a&&b<=d)as u64,s.1+(c<=b&&a<=d)as u64)))
+    print!(
+        "{:?}",
+        inp.split(['\n', ',', '-'])
+            .map(|n| n.parse::<u64>().unwrap())
+            .tuples()
+            .fold((0, 0), |s, (a, b, c, d)| (
+                s.0 + (a <= c && d <= b || c <= a && b <= d) as u64,
+                s.1 + (c <= b && a <= d) as u64
+            ))
+    )
 }
 
 #[cfg(test)]

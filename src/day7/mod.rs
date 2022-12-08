@@ -63,7 +63,7 @@ enum Input<'a> {
     LsDir(&'a str),
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=Input> {
+fn parse_input(inp: &str) -> impl Iterator<Item = Input> {
     inp.lines().map(|s| {
         if s == "$ ls" {
             LsHeader()
@@ -74,7 +74,7 @@ fn parse_input(inp: &str) -> impl Iterator<Item=Input> {
         } else if s.starts_with("dir ") {
             let s = s.split_once(" ").unwrap();
             LsDir(s.1)
-        }else{
+        } else {
             let s = s.split_once(" ").unwrap();
             LsFile(s.0.parse().unwrap(), s.1)
         }

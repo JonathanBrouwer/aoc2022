@@ -23,7 +23,10 @@ fn part2(inp: &str) -> String {
 }
 
 fn take_two<T>(s: &mut [T], a: usize, b: usize) -> (&mut T, &mut T) {
-    assert_ne!(a, b, "Can't get two mutable references to the same element.");
+    assert_ne!(
+        a, b,
+        "Can't get two mutable references to the same element."
+    );
 
     unsafe { (&mut *(&mut s[a] as *mut T), &mut *(&mut s[b] as *mut T)) }
 }

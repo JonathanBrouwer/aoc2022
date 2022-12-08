@@ -1,11 +1,21 @@
 use itertools::Itertools;
 
 fn part1(inp: &str) -> usize {
-    parse_input(inp).windows(4).find_position(|w| w.iter().unique().count() == 4).unwrap().0 + 4
+    parse_input(inp)
+        .windows(4)
+        .find_position(|w| w.iter().unique().count() == 4)
+        .unwrap()
+        .0
+        + 4
 }
 
 fn part2(inp: &str) -> usize {
-    parse_input(inp).windows(14).find_position(|w| w.iter().unique().count() == 14).unwrap().0 + 14
+    parse_input(inp)
+        .windows(14)
+        .find_position(|w| w.iter().unique().count() == 14)
+        .unwrap()
+        .0
+        + 14
 }
 
 fn parse_input(inp: &str) -> &[u8] {
