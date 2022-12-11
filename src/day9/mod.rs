@@ -9,7 +9,7 @@ fn part2(inp: &str) -> usize {
 }
 
 fn simulate<const N: usize>(inp: &str) -> usize {
-    let input = parse_input(inp);
+    let input: Vec<_> = parse_input(inp).collect();
 
     let mut been = HashSet::new();
     been.insert((0, 0));
