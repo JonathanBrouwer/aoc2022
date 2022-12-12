@@ -13,5 +13,6 @@ mod day11;
 mod day9;
 mod day10;
 mod template;
+mod day12;
 
 fn main() {}
