@@ -19,4 +19,6 @@ mod day14;
 mod day15;
 mod day16;
 
-fn main() {}
+fn main() {
+    day16::part2(include_str!("day16/input"));
+}
