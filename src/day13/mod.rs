@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::ops::Index;
 use itertools::Itertools;
 use crate::day13::Input::{Int, List};
 

@@ -1,5 +1,4 @@
-use std::collections::{HashMap, HashSet};
-use itertools::Itertools;
+use std::collections::{HashMap};
 
 pub fn part1(inp: &str) -> usize {
     let input: HashMap<&str, _> = parse_input(inp).map(|(k, v1, v2)| (k, (v1, v2))).collect();
@@ -43,7 +42,7 @@ pub fn part1(inp: &str) -> usize {
 pub fn part2(inp: &str) -> usize {
     let input: Vec<(&str, _)> = parse_input(inp).map(|(k, v1, v2)| (k, (v1, v2))).collect();
     let start = input.iter().enumerate().find(|v| v.1.0 == "AA").unwrap().0;
-    let input: Vec<(usize, Vec<usize>)> = input.iter().enumerate().map(|(i, (_, v))| {
+    let input: Vec<(usize, Vec<usize>)> = input.iter().enumerate().map(|(_, (_, v))| {
         (v.0, v.1.iter().map(|v| input.iter().enumerate().find(|w| w.1.0 == *v).unwrap().0).collect())
     }).collect();
 

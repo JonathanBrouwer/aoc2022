@@ -16,3 +16,4 @@ lto = true
 itertools = "0.10.5"
 arrayvec = "0.7.2"
 max_n = "0.1.0"
+num = "0.4.0"
