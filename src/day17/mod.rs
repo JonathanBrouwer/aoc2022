@@ -1,5 +1,5 @@
 use std::collections::hash_map::Entry;
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap};
 use crate::day17::Dir::{Left, Right};
 use crate::day17::Shape::*;
 
@@ -45,57 +45,66 @@ fn part1(inp: &str) -> usize {
 }
 
 pub fn part2(inp: &str) -> usize {
-    let mut input = parse_input(inp).cycle();
+    let input: Vec<_> = parse_input(inp).collect();
 
     let mut board: Vec<[bool; 7]> = vec![[false; 7]; 4];
     let mut start_height = 3;
     let mut extra_score = 0;
     let mut pos = (3, 2);
     let mut shape = A;
-
     let mut signatures: HashMap<_, (usize, usize)> = HashMap::new();
-
-    let period = inp.len() * 5;
     let mut count = 0;
+    let mut i = 0;
+
     while count < 1000000000000 {
-        // Move lr
-        match input.next().unwrap() {
-            Left if pos.1 != 0 && tiles(&shape, (pos.0, pos.1 - 1)).all(|t| !board[t.0][t.1]) => {
-                pos.1 -= 1;
+        for _ in 0.. {
+            // Move lr
+            match input[i % input.len()] {
+                Left if pos.1 != 0 && tiles(&shape, (pos.0, pos.1 - 1)).all(|t| !board[t.0][t.1]) => {
+                    pos.1 -= 1;
+                }
+                Right if pos.1 + shape.width() < 7 && tiles(&shape, (pos.0, pos.1 + 1)).all(|t| !board[t.0][t.1]) => {
+                    pos.1 += 1;
+                }
+                _ => {}
             }
-            Right if pos.1 + shape.width() < 7 && tiles(&shape, (pos.0, pos.1 + 1)).all(|t| !board[t.0][t.1]) => {
-                pos.1 += 1;
+            i += 1;
+
+            // Move down
+            if pos.0 + 1 - shape.height() != 0 && tiles(&shape, (pos.0 - 1, pos.1)).all(|t| !board[t.0][t.1]) {
+                pos.0 -= 1;
+            } else {
+                break;
             }
-            _ => {}
         }
 
-        // Move down
-        if pos.0 + 1 - shape.height() != 0 && tiles(&shape, (pos.0 - 1, pos.1)).all(|t| !board[t.0][t.1]) {
-            pos.0 -= 1;
-        } else {
-            tiles(&shape, (pos.0, pos.1)).for_each(|t| board[t.0][t.1] = true);
-            shape = shape.next();
-            start_height = start_height.max(pos.0 + 3);
-            pos = (start_height + shape.height(), 2);
-            while board.len() < start_height + shape.height() + 10 {
-                board.push([false; 7]);
-            }
-            count += 1;
-            if extra_score == 0 && count != 0 && count % period == 0 {
-                let score = start_height - 2;
+        tiles(&shape, (pos.0, pos.1)).for_each(|t| board[t.0][t.1] = true);
+        shape = shape.next();
+        start_height = start_height.max(pos.0 + 3);
+        pos = (start_height + shape.height(), 2);
+        while board.len() < start_height + shape.height() + 1 {
+            board.push([false; 7]);
+        }
+        count += 1;
 
-                let sig = signature(&board);
-                match signatures.entry(sig) {
-                    Entry::Occupied(e) => {
-                        let (pc, ps) = *e.get();
+        if extra_score == 0 && count > 10 && i % input.len() == 0 {
+            let score = start_height - 2;
 
-                        let iters = ((1000000000000 - pc) / (count - pc)) - 10;
-                        extra_score = (score - ps) * iters;
-                        count += iters * (count - pc);
-                    }
-                    Entry::Vacant(e) => {
-                        e.insert((count, score));
-                    }
+            let sig = signature(&board);
+            match signatures.entry(sig) {
+                Entry::Occupied(e) => {
+                    let (pc, ps) = *e.get();
+
+                    let d_score = score - ps;
+                    let d_count = count - pc;
+
+                    let iters = (1000000000000 - count) / d_count - 1;
+                    extra_score = iters * d_score;
+                    count += iters * d_count;
+                    assert!(count <= 1000000000000);
+                }
+                Entry::Vacant(e) => {
+                    e.insert((count, score));
                 }
             }
         }
@@ -104,47 +113,47 @@ pub fn part2(inp: &str) -> usize {
     extra_score + start_height - 2
 }
 
-// fn signature(board: &Vec<[bool; 7]>) -> [usize; 7] {
-//     let h: [usize; 7] = (0..7).map(|x| (0..board.len()).rev().find(|y| board[*y][x]).unwrap()).collect::<Vec<_>>().try_into().unwrap();
-//     h.map(|v| v - h.iter().min().unwrap())
-// }
-
-fn signature(board: &Vec<[bool; 7]>) -> Vec<[bool; 7]> {
-    let mut res = Vec::new();
-    let mut row = [true; 7];
-    let mut y = board.len();
-    while row.iter().any(|b| *b) && y > 0 {
-        let mut next = row;
-        for x in 0..7 {
-            if board[y-1][x] {
-                next[x] = false;
-            }
-        }
-
-        print!("");
-        // Scan right
-        for x in 0..6 {
-            if next[x] && !board[y-1][x+1] {
-                next[x+1] = true;
-            }
-        }
-
-        // Scan left
-        for x in (1..7).rev() {
-            if next[x] && !board[y-1][x-1] {
-                next[x-1] = true;
-            }
-        }
-
-        res.push(next);
-        row = next;
-        y -= 1;
-    }
-    print!("");
-    res
+fn signature(board: &Vec<[bool; 7]>) -> [usize; 7] {
+    let h: [usize; 7] = (0..7).map(|x| (0..board.len()).rev().find(|y| board[*y][x]).unwrap()).collect::<Vec<_>>().try_into().unwrap();
+    h.map(|v| v - h.iter().min().unwrap())
 }
 
-#[derive(Copy, Clone)]
+// fn signature(board: &Vec<[bool; 7]>) -> Vec<[bool; 7]> {
+//     let mut res = Vec::new();
+//     let mut row = [true; 7];
+//     let mut y = board.len();
+//     while row.iter().any(|b| *b) && y > 0 {
+//         let mut next = row;
+//         for x in 0..7 {
+//             if board[y-1][x] {
+//                 next[x] = false;
+//             }
+//         }
+//
+//         print!("");
+//         // Scan right
+//         for x in 0..6 {
+//             if next[x] && !board[y-1][x+1] {
+//                 next[x+1] = true;
+//             }
+//         }
+//
+//         // Scan left
+//         for x in (1..7).rev() {
+//             if next[x] && !board[y-1][x-1] {
+//                 next[x-1] = true;
+//             }
+//         }
+//
+//         res.push(next);
+//         row = next;
+//         y -= 1;
+//     }
+//     print!("");
+//     res
+// }
+
+#[derive(Copy, Clone, Eq, PartialEq)]
 enum Shape {
     A,B,C,D,E
 }
@@ -236,14 +245,7 @@ mod tests {
     fn test_part2_real() {
         let result = part2(include_str!("input"));
         println!("Part 2: {}", result);
-        assert_eq!(0, result);
-
-        // 1523167744924 too high
-        // 1523174183281 wrong
-        // 1523174183062 wrong
-        // 1523337627277 wrong
-        // 1522884627187 too low
-
-        // 1523337627277 correct
+        assert_eq!(1523167155404, result);
+        //         1523174183274
     }
 }
