@@ -1,30 +1,46 @@
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashMap};
 use std::collections::hash_map::Entry;
+use std::collections::{BinaryHeap, HashMap};
 use std::hash::Hash;
 
 fn part1(inp: &str) -> usize {
     let input = parse_input(inp);
     let input = &input;
-    let start = input.iter().enumerate().map(|l| l.1.iter().enumerate().find(|c| *c.1 == 'S').map(|p| (l.0, p.0))).flatten().next().unwrap();
+    let start = input
+        .iter()
+        .enumerate()
+        .map(|l| {
+            l.1.iter()
+                .enumerate()
+                .find(|c| *c.1 == 'S')
+                .map(|p| (l.0, p.0))
+        })
+        .flatten()
+        .next()
+        .unwrap();
 
     let (v, _) = dijkstra::<(usize, usize), _>(
         [(start, 0)].into_iter(),
         |p| input[p.0][p.1] == 'E',
-        |&p| nbs(p, input.len(), input[0].len()).filter(move |nb| {
-            let o = match input[p.0][p.1] {
-                'S' => 0,
-                'E' => 25,
-                c => c as usize - 'a' as usize,
-            };
-            let n = match input[nb.0][nb.1] {
-                'S' => 0,
-                'E' => 25,
-                c => c as usize - 'a' as usize,
-            };
-            o > n || (n as usize - o as usize) <= 1
-        }).map(|p| (p, 1))
-    ).unwrap();
+        |&p| {
+            nbs(p, input.len(), input[0].len())
+                .filter(move |nb| {
+                    let o = match input[p.0][p.1] {
+                        'S' => 0,
+                        'E' => 25,
+                        c => c as usize - 'a' as usize,
+                    };
+                    let n = match input[nb.0][nb.1] {
+                        'S' => 0,
+                        'E' => 25,
+                        c => c as usize - 'a' as usize,
+                    };
+                    o > n || (n as usize - o as usize) <= 1
+                })
+                .map(|p| (p, 1))
+        },
+    )
+    .unwrap();
 
     v
 }
@@ -33,55 +49,65 @@ fn part2(inp: &str) -> usize {
     let input = parse_input(inp);
     let input = &input;
 
-    let starts = input.iter().enumerate().map(|l| l.1.iter().enumerate().find(|c| *c.1 == 'S' || *c.1 == 'a').map(|p| (l.0, p.0))).flatten();
+    let starts = input
+        .iter()
+        .enumerate()
+        .map(|l| {
+            l.1.iter()
+                .enumerate()
+                .find(|c| *c.1 == 'S' || *c.1 == 'a')
+                .map(|p| (l.0, p.0))
+        })
+        .flatten();
 
     let (v, _) = dijkstra::<(usize, usize), _>(
         starts.map(|s| (s, 0)),
         |p| input[p.0][p.1] == 'E',
-        |&p| nbs(p, input.len(), input[0].len()).filter(move |nb| {
-            let o = match input[p.0][p.1] {
-                'S' => 0,
-                'E' => 25,
-                c => c as usize - 'a' as usize,
-            };
-            let n = match input[nb.0][nb.1] {
-                'S' => 0,
-                'E' => 25,
-                c => c as usize - 'a' as usize,
-            };
-            o > n || (n as usize - o as usize) <= 1
-        }).map(|p| (p, 1))
-    ).unwrap();
+        |&p| {
+            nbs(p, input.len(), input[0].len())
+                .filter(move |nb| {
+                    let o = match input[p.0][p.1] {
+                        'S' => 0,
+                        'E' => 25,
+                        c => c as usize - 'a' as usize,
+                    };
+                    let n = match input[nb.0][nb.1] {
+                        'S' => 0,
+                        'E' => 25,
+                        c => c as usize - 'a' as usize,
+                    };
+                    o > n || (n as usize - o as usize) <= 1
+                })
+                .map(|p| (p, 1))
+        },
+    )
+    .unwrap();
     v
-
-
 }
 
-fn nbs((px, py): (usize, usize), n: usize, m: usize) -> impl Iterator<Item=(usize, usize)> {
+fn nbs((px, py): (usize, usize), n: usize, m: usize) -> impl Iterator<Item = (usize, usize)> {
     let mut nbs = Vec::new();
     if px != 0 {
-        nbs.push((px-1, py));
+        nbs.push((px - 1, py));
     }
     if py != 0 {
         nbs.push((px, py - 1));
     }
-    if px != n-1 {
-        nbs.push((px+1, py));
+    if px != n - 1 {
+        nbs.push((px + 1, py));
     }
-    if py != m-1 {
-        nbs.push((px, py+1));
+    if py != m - 1 {
+        nbs.push((px, py + 1));
     }
     nbs.into_iter()
 }
 
 fn parse_input(inp: &str) -> Vec<Vec<char>> {
-    inp.lines().map(|line| {
-        line.chars().collect()
-    }).collect()
+    inp.lines().map(|line| line.chars().collect()).collect()
 }
 
 fn dijkstra<N: Eq + Hash + Clone + Copy, IN: IntoIterator<Item = (N, usize)>>(
-    starts: impl Iterator<Item=(N, usize)>,
+    starts: impl Iterator<Item = (N, usize)>,
     is_end: impl Fn(&N) -> bool,
     nbs: impl Fn(&N) -> IN,
 ) -> Option<(usize, Vec<N>)> {
@@ -109,7 +135,9 @@ fn dijkstra<N: Eq + Hash + Clone + Copy, IN: IntoIterator<Item = (N, usize)>>(
     while let Some(State(n, c)) = heap.pop() {
         //If we found something shorter or equally good, continue
         let (_, _, visited) = distances.get_mut(&n).unwrap();
-        if *visited { continue }
+        if *visited {
+            continue;
+        }
         *visited = true;
 
         //Found goal
@@ -121,7 +149,7 @@ fn dijkstra<N: Eq + Hash + Clone + Copy, IN: IntoIterator<Item = (N, usize)>>(
             }
             path.reverse();
 
-            return Some((c, path))
+            return Some((c, path));
         }
 
         // Iterate over neighbours

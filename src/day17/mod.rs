@@ -1,7 +1,7 @@
-use std::collections::hash_map::Entry;
-use std::collections::{HashMap};
 use crate::day17::Dir::{Left, Right};
 use crate::day17::Shape::*;
+use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 
 fn part1(inp: &str) -> usize {
     let mut input = parse_input(inp).cycle();
@@ -19,14 +19,19 @@ fn part1(inp: &str) -> usize {
             Left if pos.1 != 0 && tiles(&shape, (pos.0, pos.1 - 1)).all(|t| !board[t.0][t.1]) => {
                 pos.1 -= 1;
             }
-            Right if pos.1 + shape.width() < 7 && tiles(&shape, (pos.0, pos.1 + 1)).all(|t| !board[t.0][t.1]) => {
+            Right
+                if pos.1 + shape.width() < 7
+                    && tiles(&shape, (pos.0, pos.1 + 1)).all(|t| !board[t.0][t.1]) =>
+            {
                 pos.1 += 1;
             }
             _ => {}
         }
 
         // Move down
-        if pos.0 + 1 - shape.height() != 0 && tiles(&shape, (pos.0 - 1, pos.1)).all(|t| !board[t.0][t.1]) {
+        if pos.0 + 1 - shape.height() != 0
+            && tiles(&shape, (pos.0 - 1, pos.1)).all(|t| !board[t.0][t.1])
+        {
             pos.0 -= 1;
         } else {
             tiles(&shape, (pos.0, pos.1)).for_each(|t| board[t.0][t.1] = true);
@@ -39,7 +44,6 @@ fn part1(inp: &str) -> usize {
             count += 1;
         }
     }
-
 
     return start_height - 2;
 }
@@ -60,10 +64,15 @@ pub fn part2(inp: &str) -> usize {
         for _ in 0.. {
             // Move lr
             match input[i % input.len()] {
-                Left if pos.1 != 0 && tiles(&shape, (pos.0, pos.1 - 1)).all(|t| !board[t.0][t.1]) => {
+                Left if pos.1 != 0
+                    && tiles(&shape, (pos.0, pos.1 - 1)).all(|t| !board[t.0][t.1]) =>
+                {
                     pos.1 -= 1;
                 }
-                Right if pos.1 + shape.width() < 7 && tiles(&shape, (pos.0, pos.1 + 1)).all(|t| !board[t.0][t.1]) => {
+                Right
+                    if pos.1 + shape.width() < 7
+                        && tiles(&shape, (pos.0, pos.1 + 1)).all(|t| !board[t.0][t.1]) =>
+                {
                     pos.1 += 1;
                 }
                 _ => {}
@@ -71,7 +80,9 @@ pub fn part2(inp: &str) -> usize {
             i += 1;
 
             // Move down
-            if pos.0 + 1 - shape.height() != 0 && tiles(&shape, (pos.0 - 1, pos.1)).all(|t| !board[t.0][t.1]) {
+            if pos.0 + 1 - shape.height() != 0
+                && tiles(&shape, (pos.0 - 1, pos.1)).all(|t| !board[t.0][t.1])
+            {
                 pos.0 -= 1;
             } else {
                 break;
@@ -114,7 +125,11 @@ pub fn part2(inp: &str) -> usize {
 }
 
 fn signature(board: &Vec<[bool; 7]>) -> [usize; 7] {
-    let h: [usize; 7] = (0..7).map(|x| (0..board.len()).rev().find(|y| board[*y][x]).unwrap()).collect::<Vec<_>>().try_into().unwrap();
+    let h: [usize; 7] = (0..7)
+        .map(|x| (0..board.len()).rev().find(|y| board[*y][x]).unwrap())
+        .collect::<Vec<_>>()
+        .try_into()
+        .unwrap();
     h.map(|v| v - h.iter().min().unwrap())
 }
 
@@ -155,7 +170,11 @@ fn signature(board: &Vec<[bool; 7]>) -> [usize; 7] {
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 enum Shape {
-    A,B,C,D,E
+    A,
+    B,
+    C,
+    D,
+    E,
 }
 
 impl Shape {
@@ -190,31 +209,33 @@ impl Shape {
     }
 }
 
-const A_POS: [(usize, usize); 4] = [(0,0) , (0,1) , (0,2) , (0,3)];
-const B_POS: [(usize, usize); 5] = [(0,1) , (1,0) , (1,1) , (1,2) , (2,1)];
-const C_POS: [(usize, usize); 5] = [(0,2) , (1,2) , (2,0) , (2,1) , (2,2)];
-const D_POS: [(usize, usize); 4] = [(0,0) , (1,0) , (2,0) , (3,0)];
-const E_POS: [(usize, usize); 4] = [(0,0) , (0,1) , (1,0) , (1,1)];
+const A_POS: [(usize, usize); 4] = [(0, 0), (0, 1), (0, 2), (0, 3)];
+const B_POS: [(usize, usize); 5] = [(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)];
+const C_POS: [(usize, usize); 5] = [(0, 2), (1, 2), (2, 0), (2, 1), (2, 2)];
+const D_POS: [(usize, usize); 4] = [(0, 0), (1, 0), (2, 0), (3, 0)];
+const E_POS: [(usize, usize); 4] = [(0, 0), (0, 1), (1, 0), (1, 1)];
 
-fn tiles(shape: &Shape, coord: (usize, usize)) -> impl Iterator<Item=(usize, usize)> {
+fn tiles(shape: &Shape, coord: (usize, usize)) -> impl Iterator<Item = (usize, usize)> {
     match shape {
-        A => A_POS[..].iter(),//vec!,
-        B => B_POS[..].iter(),//vec![(coord.0,coord.1+1) , (coord.0+1,coord.1) , (coord.0+1,coord.1+1) , (coord.0+1,coord.1+2) , (coord.0+2,coord.1+1)],
-        C => C_POS[..].iter(),//vec![(coord.0,coord.1+2) , (coord.0+1,coord.1+2) , (coord.0+2,coord.1) , (coord.0+2,coord.1+1) , (coord.0+2,coord.1+2)],
-        D => D_POS[..].iter(),//vec![(coord.0,coord.1) , (coord.0+1,coord.1) , (coord.0+2,coord.1) , (coord.0+3,coord.1)],
-        E => E_POS[..].iter(),//vec![(coord.0,coord.1) , (coord.0,coord.1+1) , (coord.0+1,coord.1) , (coord.0+1,coord.1+1)],
-    }.map(move |&(x, y)| (coord.0 - x, coord.1 + y))
+        A => A_POS[..].iter(), //vec!,
+        B => B_POS[..].iter(), //vec![(coord.0,coord.1+1) , (coord.0+1,coord.1) , (coord.0+1,coord.1+1) , (coord.0+1,coord.1+2) , (coord.0+2,coord.1+1)],
+        C => C_POS[..].iter(), //vec![(coord.0,coord.1+2) , (coord.0+1,coord.1+2) , (coord.0+2,coord.1) , (coord.0+2,coord.1+1) , (coord.0+2,coord.1+2)],
+        D => D_POS[..].iter(), //vec![(coord.0,coord.1) , (coord.0+1,coord.1) , (coord.0+2,coord.1) , (coord.0+3,coord.1)],
+        E => E_POS[..].iter(), //vec![(coord.0,coord.1) , (coord.0,coord.1+1) , (coord.0+1,coord.1) , (coord.0+1,coord.1+1)],
+    }
+    .map(move |&(x, y)| (coord.0 - x, coord.1 + y))
 }
 
 enum Dir {
-    Left, Right
+    Left,
+    Right,
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=Dir> + '_ + Clone {
+fn parse_input(inp: &str) -> impl Iterator<Item = Dir> + '_ + Clone {
     inp.bytes().map(|b| match b {
         b'>' => Right,
         b'<' => Left,
-        _ => unreachable!()
+        _ => unreachable!(),
     })
 }
 

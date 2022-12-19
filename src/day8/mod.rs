@@ -4,9 +4,9 @@ fn part1(inp: &str) -> usize {
     let mut marked = vec![vec![false; n]; n];
 
     let l = (0..n).map(|prim| scan(n, (prim, 0), (0, 1)));
-    let r = (0..n).map(|prim| scan(n, (prim, n-1), (0, -1)));
+    let r = (0..n).map(|prim| scan(n, (prim, n - 1), (0, -1)));
     let t = (0..n).map(|prim| scan(n, (0, prim), (1, 0)));
-    let b = (0..n).map(|prim| scan(n, (n-1, prim), (-1, 0)));
+    let b = (0..n).map(|prim| scan(n, (n - 1, prim), (-1, 0)));
 
     for mut scan in l.chain(r).chain(t).chain(b) {
         let pos0 = scan.next().unwrap();
@@ -32,28 +32,35 @@ fn part2(inp: &str) -> usize {
     let input = &input;
     let n = input.len();
 
-    (0..n).map(move |x| {
-        (0..n).map(move |y| {
-            [(0,1), (0, -1), (1, 0), (-1, 0)].into_iter().map(|dir| {
-                let v0 = input[x][y];
-                let mut count = 0;
-                for (xs, ys) in scan(n, (x, y), dir).skip(1) {
-                    count += 1;
-                    if input[xs][ys] >= v0 {
-                        break;
-                    }
-                }
-                count
-            }).product()
+    (0..n)
+        .map(move |x| {
+            (0..n).map(move |y| {
+                [(0, 1), (0, -1), (1, 0), (-1, 0)]
+                    .into_iter()
+                    .map(|dir| {
+                        let v0 = input[x][y];
+                        let mut count = 0;
+                        for (xs, ys) in scan(n, (x, y), dir).skip(1) {
+                            count += 1;
+                            if input[xs][ys] >= v0 {
+                                break;
+                            }
+                        }
+                        count
+                    })
+                    .product()
+            })
         })
-    }).flatten().max().unwrap()
+        .flatten()
+        .max()
+        .unwrap()
 }
 
 pub fn scan(
     n: usize,
     start: (usize, usize),
     dir: (isize, isize),
-) -> impl Iterator<Item=(usize, usize)> {
+) -> impl Iterator<Item = (usize, usize)> {
     (0..)
         .map(move |i| (start.0 as isize + i * dir.0, start.1 as isize + i * dir.1))
         .take_while(move |&(x, y)| x >= 0 && y >= 0 && x < n as isize && y < n as isize)

@@ -30,11 +30,7 @@ fn part2(inp: &str) {
     let mut output = String::new();
     for instr in input {
         for _ in 0..instr.cycles() {
-            output.push(if i.abs_diff(state) <= 1 {
-                '#'
-            } else {
-                ' '
-            });
+            output.push(if i.abs_diff(state) <= 1 { '#' } else { ' ' });
             i += 1;
             i %= 40;
         }
@@ -44,13 +40,13 @@ fn part2(inp: &str) {
     }
 
     for y in 0..6 {
-        println!("{}", &output[y*40..(y+1)*40]);
+        println!("{}", &output[y * 40..(y + 1) * 40]);
     }
 }
 
 enum Instr {
     Noop,
-    Add(isize)
+    Add(isize),
 }
 
 impl Instr {
@@ -62,9 +58,13 @@ impl Instr {
     }
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=Instr> + '_ {
-    inp.lines().map(|l| if l == "noop" { Noop } else {
-        Add(l[5..].parse().unwrap())
+fn parse_input(inp: &str) -> impl Iterator<Item = Instr> + '_ {
+    inp.lines().map(|l| {
+        if l == "noop" {
+            Noop
+        } else {
+            Add(l[5..].parse().unwrap())
+        }
     })
 }
 

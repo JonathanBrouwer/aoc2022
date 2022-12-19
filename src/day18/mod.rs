@@ -1,28 +1,31 @@
-use std::collections::{HashSet, VecDeque};
 use itertools::Itertools;
+use std::collections::{HashSet, VecDeque};
 
 fn part1(inp: &str) -> usize {
-    let input = parse_input(inp).map(|p| (p.0+1,p.1+1,p.2+1));
+    let input = parse_input(inp).map(|p| (p.0 + 1, p.1 + 1, p.2 + 1));
     let mut set = HashSet::new();
     input.for_each(|p| {
         set.insert(p);
     });
-    set.iter().map(|p| nbs(*p).filter(|nb| !set.contains(nb)).count()).sum()
+    set.iter()
+        .map(|p| nbs(*p).filter(|nb| !set.contains(nb)).count())
+        .sum()
 }
 
-fn nbs(p: (usize, usize, usize)) -> impl Iterator<Item=(usize, usize, usize)> {
+fn nbs(p: (usize, usize, usize)) -> impl Iterator<Item = (usize, usize, usize)> {
     [
-        (p.0+1, p.1, p.2),
-        (p.0-1, p.1, p.2),
-        (p.0, p.1+1, p.2),
-        (p.0, p.1-1, p.2),
-        (p.0, p.1, p.2+1),
-        (p.0, p.1, p.2-1),
-    ].into_iter()
+        (p.0 + 1, p.1, p.2),
+        (p.0 - 1, p.1, p.2),
+        (p.0, p.1 + 1, p.2),
+        (p.0, p.1 - 1, p.2),
+        (p.0, p.1, p.2 + 1),
+        (p.0, p.1, p.2 - 1),
+    ]
+    .into_iter()
 }
 
 fn part2(inp: &str) -> usize {
-    let input = parse_input(inp).map(|p| (p.0+2,p.1+2,p.2+2));
+    let input = parse_input(inp).map(|p| (p.0 + 2, p.1 + 2, p.2 + 2));
     let mut set = HashSet::new();
     input.for_each(|p| {
         set.insert(p);
@@ -30,7 +33,7 @@ fn part2(inp: &str) -> usize {
 
     let mut visited = HashSet::new();
     let mut queue = VecDeque::new();
-    queue.push_back((1,1,1));
+    queue.push_back((1, 1, 1));
     let mut sum = 0;
 
     while let Some(p) = queue.pop_front() {
@@ -40,7 +43,7 @@ fn part2(inp: &str) -> usize {
             }
             if set.contains(&nb) {
                 sum += 1;
-            }else if !visited.contains(&nb) {
+            } else if !visited.contains(&nb) {
                 queue.push_back(nb);
                 visited.insert(nb);
             }
@@ -50,8 +53,13 @@ fn part2(inp: &str) -> usize {
     sum
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=(usize,usize,usize)> + '_ {
-    inp.lines().map(|l| l.split(",").map(|n| n.parse().unwrap()).collect_tuple().unwrap())
+fn parse_input(inp: &str) -> impl Iterator<Item = (usize, usize, usize)> + '_ {
+    inp.lines().map(|l| {
+        l.split(",")
+            .map(|n| n.parse().unwrap())
+            .collect_tuple()
+            .unwrap()
+    })
 }
 
 #[cfg(test)]

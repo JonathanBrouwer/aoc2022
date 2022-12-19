@@ -1,4 +1,4 @@
-use std::collections::{HashMap};
+use std::collections::HashMap;
 
 pub fn part1(inp: &str) -> usize {
     let input: HashMap<&str, _> = parse_input(inp).map(|(k, v1, v2)| (k, (v1, v2))).collect();
@@ -6,9 +6,7 @@ pub fn part1(inp: &str) -> usize {
     let mut map: HashMap<(Vec<&str>, &str), usize> = HashMap::new();
     map.insert((Vec::new(), "AA"), 0);
 
-    let eval = |v: &Vec<&str>| -> usize {
-        v.iter().map(|v| input[v].0).sum()
-    };
+    let eval = |v: &Vec<&str>| -> usize { v.iter().map(|v| input[v].0).sum() };
 
     for _ in 0..30 {
         let mut new_map = HashMap::new();
@@ -25,7 +23,7 @@ pub fn part1(inp: &str) -> usize {
             if !visited.contains(&current) && input[current].0 != 0 {
                 visited.push(current);
                 visited.sort();
-                let x= new_map.entry((visited, current)).or_insert(0);
+                let x = new_map.entry((visited, current)).or_insert(0);
                 *x = (*x).max(value + score);
             }
         }
@@ -38,14 +36,21 @@ pub fn part1(inp: &str) -> usize {
     return *best.1;
 }
 
-
 pub fn part2(inp: &str) -> usize {
     let input: Vec<(&str, _)> = parse_input(inp).map(|(k, v1, v2)| (k, (v1, v2))).collect();
-    let start = input.iter().enumerate().find(|v| v.1.0 == "AA").unwrap().0;
-    let input: Vec<(usize, Vec<usize>)> = input.iter().enumerate().map(|(_, (_, v))| {
-        (v.0, v.1.iter().map(|v| input.iter().enumerate().find(|w| w.1.0 == *v).unwrap().0).collect())
-    }).collect();
-
+    let start = input.iter().enumerate().find(|v| v.1 .0 == "AA").unwrap().0;
+    let input: Vec<(usize, Vec<usize>)> = input
+        .iter()
+        .enumerate()
+        .map(|(_, (_, v))| {
+            (
+                v.0,
+                v.1.iter()
+                    .map(|v| input.iter().enumerate().find(|w| w.1 .0 == *v).unwrap().0)
+                    .collect(),
+            )
+        })
+        .collect();
 
     let mut map: HashMap<(usize, usize, usize), usize> = HashMap::new();
     map.insert((0, start, start), 0);
@@ -92,7 +97,9 @@ pub fn part2(inp: &str) -> usize {
 
                 //Open c2
                 if (visited & (1 << c2) == 0) && input[c2].0 != 0 {
-                    let x = new_map.entry((visited | (1 << c1) | (1 << c2), c1, c2)).or_insert(0);
+                    let x = new_map
+                        .entry((visited | (1 << c1) | (1 << c2), c1, c2))
+                        .or_insert(0);
                     *x = (*x).max(value + score);
                 }
             }
@@ -107,10 +114,13 @@ pub fn part2(inp: &str) -> usize {
     return *best.1;
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=(&str, usize, Vec<&str>)> {
+fn parse_input(inp: &str) -> impl Iterator<Item = (&str, usize, Vec<&str>)> {
     inp.lines().map(|line| {
         let name = &line[6..8];
-        let (flow, valves) = line[23..].split_once("; tunnels lead to valves ").or(line[23..].split_once("; tunnel leads to valve ")).unwrap();
+        let (flow, valves) = line[23..]
+            .split_once("; tunnels lead to valves ")
+            .or(line[23..].split_once("; tunnel leads to valve "))
+            .unwrap();
         (name, flow.parse().unwrap(), valves.split(", ").collect())
     })
 }

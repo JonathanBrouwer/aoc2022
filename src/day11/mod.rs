@@ -1,6 +1,6 @@
-use std::collections::VecDeque;
 use itertools::Itertools;
 use max_n::max_n_trait::MaxN;
+use std::collections::VecDeque;
 
 fn part1(inp: &str) -> usize {
     let mut input = parse_input(inp);
@@ -21,7 +21,12 @@ fn part1(inp: &str) -> usize {
         }
     }
 
-    input.into_iter().map(|m| m.counter).max_n::<2>().iter().product()
+    input
+        .into_iter()
+        .map(|m| m.counter)
+        .max_n::<2>()
+        .iter()
+        .product()
 }
 
 fn part2(inp: &str) -> usize {
@@ -44,7 +49,12 @@ fn part2(inp: &str) -> usize {
         }
     }
 
-    input.into_iter().map(|m| m.counter).max_n::<2>().iter().product()
+    input
+        .into_iter()
+        .map(|m| m.counter)
+        .max_n::<2>()
+        .iter()
+        .product()
 }
 
 enum Operation {
@@ -56,9 +66,9 @@ enum Operation {
 impl Operation {
     fn apply(&self, x: usize) -> usize {
         match self {
-            Operation::Add(v) => x+v,
-            Operation::Mul(v) => x*v,
-            Operation::Square => x*x,
+            Operation::Add(v) => x + v,
+            Operation::Mul(v) => x * v,
+            Operation::Square => x * x,
         }
     }
 }
@@ -73,23 +83,34 @@ struct Monkey {
 }
 
 fn parse_input(inp: &str) -> Vec<Monkey> {
-    inp.lines().batching(|lines| {
-        let _ = lines.next()?;
-        let items = lines.next().unwrap()[18..].split(", ").map(|v| v.parse().unwrap()).collect();
-        let op = match &lines.next().unwrap()[19..] {
-            "old * old" => Operation::Square,
-            s if s.starts_with("old + ") => Operation::Add(s[6..].parse().unwrap()),
-            s if s.starts_with("old * ") => Operation::Mul(s[6..].parse().unwrap()),
-            _ => unreachable!()
-        };
-        let test_divisibility = lines.next().unwrap()[21..].parse().unwrap();
-        let test_true = lines.next().unwrap()[29..].parse().unwrap();
-        let test_false = lines.next().unwrap()[30..].parse().unwrap();
-        let _ = lines.next();
+    inp.lines()
+        .batching(|lines| {
+            let _ = lines.next()?;
+            let items = lines.next().unwrap()[18..]
+                .split(", ")
+                .map(|v| v.parse().unwrap())
+                .collect();
+            let op = match &lines.next().unwrap()[19..] {
+                "old * old" => Operation::Square,
+                s if s.starts_with("old + ") => Operation::Add(s[6..].parse().unwrap()),
+                s if s.starts_with("old * ") => Operation::Mul(s[6..].parse().unwrap()),
+                _ => unreachable!(),
+            };
+            let test_divisibility = lines.next().unwrap()[21..].parse().unwrap();
+            let test_true = lines.next().unwrap()[29..].parse().unwrap();
+            let test_false = lines.next().unwrap()[30..].parse().unwrap();
+            let _ = lines.next();
 
-
-        Some(Monkey { items, op, test_divisibility, test_true, test_false, counter: 0 })
-    }).collect()
+            Some(Monkey {
+                items,
+                op,
+                test_divisibility,
+                test_true,
+                test_false,
+                counter: 0,
+            })
+        })
+        .collect()
 }
 
 #[cfg(test)]

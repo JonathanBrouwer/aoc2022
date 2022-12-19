@@ -1,6 +1,6 @@
+use itertools::Itertools;
 use std::cmp::{max, min};
 use std::collections::HashSet;
-use itertools::Itertools;
 
 fn part1(inp: &str) -> usize {
     let mut state = build_initial(inp);
@@ -8,7 +8,7 @@ fn part1(inp: &str) -> usize {
     let air = state.iter().map(|p| p.1).max().unwrap() + 1;
 
     for count in 0.. {
-        let mut pos = (500,0);
+        let mut pos = (500, 0);
 
         loop {
             if pos.1 == air {
@@ -18,12 +18,12 @@ fn part1(inp: &str) -> usize {
                 pos = (pos.0, pos.1 + 1);
                 continue;
             }
-            if !state.contains(&(pos.0-1, pos.1 + 1)) {
-                pos = (pos.0-1, pos.1 + 1);
+            if !state.contains(&(pos.0 - 1, pos.1 + 1)) {
+                pos = (pos.0 - 1, pos.1 + 1);
                 continue;
             }
-            if !state.contains(&(pos.0+1, pos.1 + 1)) {
-                pos = (pos.0+1, pos.1 + 1);
+            if !state.contains(&(pos.0 + 1, pos.1 + 1)) {
+                pos = (pos.0 + 1, pos.1 + 1);
                 continue;
             }
             state.insert(pos);
@@ -40,7 +40,7 @@ fn part2(inp: &str) -> usize {
     let ground = state.iter().map(|p| p.1).max().unwrap() + 1;
 
     for count in 0.. {
-        let mut pos = (500,0);
+        let mut pos = (500, 0);
 
         loop {
             if pos.1 == ground {
@@ -51,12 +51,12 @@ fn part2(inp: &str) -> usize {
                 pos = (pos.0, pos.1 + 1);
                 continue;
             }
-            if !state.contains(&(pos.0-1, pos.1 + 1)) {
-                pos = (pos.0-1, pos.1 + 1);
+            if !state.contains(&(pos.0 - 1, pos.1 + 1)) {
+                pos = (pos.0 - 1, pos.1 + 1);
                 continue;
             }
-            if !state.contains(&(pos.0+1, pos.1 + 1)) {
-                pos = (pos.0+1, pos.1 + 1);
+            if !state.contains(&(pos.0 + 1, pos.1 + 1)) {
+                pos = (pos.0 + 1, pos.1 + 1);
                 continue;
             }
             if pos == (500, 0) {
@@ -78,7 +78,7 @@ fn build_initial(inp: &str) -> HashSet<(usize, usize)> {
                 for y in min(from.1, to.1)..=max(from.1, to.1) {
                     state.insert((from.0, y));
                 }
-            }else if from.1 == to.1 {
+            } else if from.1 == to.1 {
                 for x in min(from.0, to.0)..=max(from.0, to.0) {
                     state.insert((x, from.1));
                 }
@@ -90,7 +90,7 @@ fn build_initial(inp: &str) -> HashSet<(usize, usize)> {
     state
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=impl Iterator<Item=(usize, usize)> + '_> + '_ {
+fn parse_input(inp: &str) -> impl Iterator<Item = impl Iterator<Item = (usize, usize)> + '_> + '_ {
     inp.lines().map(|l| {
         l.split(" -> ").map(|p| {
             let (x, y) = p.split_once(",").unwrap();

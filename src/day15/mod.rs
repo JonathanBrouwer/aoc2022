@@ -11,12 +11,11 @@ fn part1(inp: &str, row: isize) -> usize {
             continue;
         }
         let width = (d - sy.abs_diff(row)) as isize;
-        for x in sx - width ..= sx + width {
+        for x in sx - width..=sx + width {
             set.insert(x);
         }
 
-        if
-        by == row {
+        if by == row {
             bcs.insert(by);
         }
     }
@@ -26,7 +25,7 @@ fn part1(inp: &str, row: isize) -> usize {
 
 fn part2(inp: &str, border: isize) -> usize {
     let mut input: Vec<_> = parse_input(inp).collect();
-    input.sort_by_key(|k| k.0.0);
+    input.sort_by_key(|k| k.0 .0);
 
     for row in 0..=border {
         let mut max = 0isize;
@@ -53,13 +52,16 @@ fn part2(inp: &str, border: isize) -> usize {
     unreachable!()
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=((isize, isize), (isize, isize))> + '_ {
+fn parse_input(inp: &str) -> impl Iterator<Item = ((isize, isize), (isize, isize))> + '_ {
     inp.lines().map(|line| {
         let (p1, p2) = line.split_once(": closest beacon is at x=").unwrap();
         let p1 = p1.strip_prefix("Sensor at x=").unwrap();
         let (p1a, p1b) = p1.split_once(", y=").unwrap();
         let (p2a, p2b) = p2.split_once(", y=").unwrap();
-        ((p1a.parse().unwrap(), p1b.parse().unwrap()), (p2a.parse().unwrap(), p2b.parse().unwrap()))
+        (
+            (p1a.parse().unwrap(), p1b.parse().unwrap()),
+            (p2a.parse().unwrap(), p2b.parse().unwrap()),
+        )
     })
 }
 

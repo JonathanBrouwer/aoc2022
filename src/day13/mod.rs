@@ -1,10 +1,15 @@
-use std::cmp::Ordering;
-use itertools::Itertools;
 use crate::day13::Input::{Int, List};
+use itertools::Itertools;
+use std::cmp::Ordering;
 
 fn part1(inp: &str) -> usize {
     let input = parse_input(inp);
-    input.tuples().enumerate().filter(|(_, (l, r))| l < r).map(|(i, _)| i+1).sum()
+    input
+        .tuples()
+        .enumerate()
+        .filter(|(_, (l, r))| l < r)
+        .map(|(i, _)| i + 1)
+        .sum()
 }
 
 fn part2(inp: &str) -> usize {
@@ -36,8 +41,8 @@ impl Ord for Input {
     fn cmp(&self, other: &Self) -> Ordering {
         match (self, other) {
             (Int(x), Int(y)) => x.cmp(y),
-            (Int(x), y@List(_)) => List(vec![Int(*x)]).cmp(y),
-            (x@List(_), Int(y)) => x.cmp(&List(vec![Int(*y)])),
+            (Int(x), y @ List(_)) => List(vec![Int(*x)]).cmp(y),
+            (x @ List(_), Int(y)) => x.cmp(&List(vec![Int(*y)])),
             (List(x), List(y)) => x.cmp(y),
         }
     }
@@ -62,13 +67,11 @@ fn parse_line(mut l: &str) -> (Input, &str) {
     }
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=Input> + '_ {
-    inp.lines().filter(|l| !l.is_empty()).map(|l| {
-        parse_line(l).0
-    })
+fn parse_input(inp: &str) -> impl Iterator<Item = Input> + '_ {
+    inp.lines()
+        .filter(|l| !l.is_empty())
+        .map(|l| parse_line(l).0)
 }
-
-
 
 #[cfg(test)]
 mod tests {
