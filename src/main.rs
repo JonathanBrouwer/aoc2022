@@ -12,6 +12,7 @@ mod day17;
 mod day18;
 mod day19;
 mod day2;
+mod day20;
 mod day3;
 mod day4;
 mod day5;
@@ -23,5 +24,5 @@ mod day9;
 mod template;
 
 fn main() {
-    println!("{}", day19::part1(include_str!("day19/example1")));
+    println!("{}", day19::part2(include_str!("day19/input")));
 }
