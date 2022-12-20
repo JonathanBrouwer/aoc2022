@@ -2,11 +2,15 @@ use itertools::Itertools;
 
 fn part1(inp: &str) -> isize {
     let data = parse_input(inp).collect_vec();
-    let mut data = data.iter().enumerate().map(|(i, n)| {
-        let prev = if i == 0 { data.len() - 1 } else { i - 1 };
-        let next = (i + 1) % data.len();
-        (*n, prev, next)
-    }).collect_vec();
+    let mut data = data
+        .iter()
+        .enumerate()
+        .map(|(i, n)| {
+            let prev = if i == 0 { data.len() - 1 } else { i - 1 };
+            let next = (i + 1) % data.len();
+            (*n, prev, next)
+        })
+        .collect_vec();
 
     for i in 0..data.len() {
         let d = data[i].0;
@@ -37,7 +41,6 @@ fn part1(inp: &str) -> isize {
                 data[rr].1 = i;
             }
         }
-
     }
 
     let mut i = data.iter().find_position(|v| v.0 == 0).unwrap().0;
@@ -54,14 +57,18 @@ fn part1(inp: &str) -> isize {
 
 fn part2(inp: &str) -> isize {
     let data = parse_input(inp).collect_vec();
-    let mut data = data.iter().enumerate().map(|(i, n)| {
-        let prev = if i == 0 { data.len() - 1 } else { i - 1 };
-        let next = (i + 1) % data.len();
+    let mut data = data
+        .iter()
+        .enumerate()
+        .map(|(i, n)| {
+            let prev = if i == 0 { data.len() - 1 } else { i - 1 };
+            let next = (i + 1) % data.len();
 
-        let n = *n * 811589153;
+            let n = *n * 811589153;
 
-        (n, prev, next)
-    }).collect_vec();
+            (n, prev, next)
+        })
+        .collect_vec();
 
     for _ in 0..10 {
         for i in 0..data.len() {
@@ -108,7 +115,7 @@ fn part2(inp: &str) -> isize {
     return sum;
 }
 
-fn parse_input(inp: &str) -> impl Iterator<Item=isize> + '_ {
+fn parse_input(inp: &str) -> impl Iterator<Item = isize> + '_ {
     inp.lines().map(|n| n.parse().unwrap())
 }
 

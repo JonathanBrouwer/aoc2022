@@ -91,9 +91,8 @@ impl State {
 
 pub fn part2(inp: &str) -> u32 {
     parse_input(inp)
-        .enumerate()
         .take(3)
-        .map(|(bid, b)| {
+        .map(|b| {
             let mut states = HashSet::new();
             states.insert(State([(0, 1), (0, 0), (0, 0), (0, 0)]));
 
