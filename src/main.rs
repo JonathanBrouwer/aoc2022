@@ -22,6 +22,7 @@ mod day8;
 mod day9;
 #[allow(unused_variables)]
 mod template;
+mod day22;
 
 fn main() {
     println!("{}", day19::part2(include_str!("day19/input")));
